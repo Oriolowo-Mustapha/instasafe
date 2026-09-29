@@ -201,6 +201,23 @@ export async function createOrderAction(
           "Give the rider's phone, account number and bank together — riders have no saved payout details.",
       };
     }
+    // The rider bank fields carry a holder-name check token. The vendor
+    // must have verified the account (or explicitly acknowledged when
+    // verification was down) for exactly these details - otherwise an
+    // unverified account means the handover succeeds and the fee fails
+    // silently, which is the incident this guards.
+    const riderBankCheck = text("riderBankCheck");
+    const riderKey = `${driverBankCode}:${driverAccountNumber}`;
+    if (
+      riderBankCheck !== `verified:${riderKey}` &&
+      riderBankCheck !== `acknowledged:${riderKey}`
+    ) {
+      return {
+        ok: false,
+        message:
+          "Verify the rider\u2019s account name before creating the order.",
+      };
+    }
   } else if (driverFields > 0) {
     return {
       ok: false,

@@ -7,6 +7,8 @@ import { createOrderAction, type ActionResult } from "@/app/dashboard/actions";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import type { Bank } from "@/lib/types";
 import { cn } from "@/lib/cn";
+import { PhoneInput } from "@/components/dashboard/phone-input";
+import { RiderBankFields } from "@/components/dashboard/rider-bank-fields";
 
 type Item = { description: string; quantity: string; unitPrice: string };
 
@@ -72,18 +74,8 @@ export function CreateOrderForm({ banks }: { banks: Bank[] }) {
               className={inputClass}
             />
           </Field>
-          <Field label="Buyer phone" htmlFor="customerPhone" hint="Nigerian mobile.">
-            <input
-              id="customerPhone"
-              name="customerPhone"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              maxLength={24}
-              required
-              placeholder="0801 234 5678…"
-              className={cn(inputClass, "font-mono")}
-            />
+          <Field label="Buyer phone" htmlFor="customerPhone" hint="Nigerian mobile. Type the rest after +234.">
+            <PhoneInput id="customerPhone" name="customerPhone" required placeholder="7031602720" />
           </Field>
           <Field
             label="Buyer email"
@@ -287,73 +279,7 @@ export function CreateOrderForm({ banks }: { banks: Bank[] }) {
           </Field>
 
           {fulfillment === "0" ? (
-            <div className="grid gap-4 border-t border-line pt-5 sm:grid-cols-3">
-              <p className="text-xs leading-5 text-ink-muted sm:col-span-3">
-                Required on a rider order. Riders hold no saved payout details, so
-                all three go on this order — the backend pays the account below the
-                moment the rider confirms the handover.
-              </p>
-              <Field
-                label="Rider phone"
-                htmlFor="driverPhone"
-                hint="Their WhatsApp number."
-              >
-                <input
-                  id="driverPhone"
-                  name="driverPhone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="off"
-                  required
-                  maxLength={24}
-                  placeholder="0805 555 6666…"
-                  className={cn(inputClass, "font-mono")}
-                />
-              </Field>
-              <Field label="Rider account" htmlFor="driverAccountNumber">
-                <input
-                  id="driverAccountNumber"
-                  name="driverAccountNumber"
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="off"
-                  required
-                  maxLength={20}
-                  placeholder="0123456789"
-                  className={cn(inputClass, "font-mono")}
-                />
-              </Field>
-              <Field label="Rider bank" htmlFor="driverBankCode">
-                {banks.length > 0 ? (
-                  <select
-                    id="driverBankCode"
-                    name="driverBankCode"
-                    required
-                    defaultValue=""
-                    className={cn(inputClass, "appearance-none")}
-                  >
-                    <option value="">Choose a bank…</option>
-                    {banks.map((bank) => (
-                      <option key={bank.code} value={bank.code}>
-                        {bank.name}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    id="driverBankCode"
-                    name="driverBankCode"
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="off"
-                    required
-                    maxLength={12}
-                    placeholder="058"
-                    className={cn(inputClass, "font-mono")}
-                  />
-                )}
-              </Field>
-            </div>
+            <RiderBankFields banks={banks} />
           ) : null}
         </div>
       </section>
